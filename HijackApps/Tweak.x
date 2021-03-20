@@ -18,7 +18,7 @@ NSArray* getAppPreferences(){
     return appsToHideStatusbar;
 }
 
-%hook FBSScene  	 
+%hook SceneClass  	 
 -(void)updateClientSettings:(UIMutableApplicationSceneClientSettings *)settings withTransitionContext:(id)arg2 { 
 	NSArray *appPreferences = getAppPreferences();
 	NSString *currentBundleID = [NSBundle mainBundle].bundleIdentifier;
@@ -26,8 +26,8 @@ NSArray* getAppPreferences(){
 	// this shit is called a fair bit, so I'm keeping track of the call count 
 	// some apps only need it to be called 4 times to hide the statusbar while others need it to be called 7, sooooo 7 it is
 	if([appPreferences containsObject:currentBundleID] && callCount <= 6){ 
-		[settings setStatusBarAlpha:0];  
-		[settings setStatusBarHidden:YES];  
+		[settings setStatusBarAlpha:0]; 
+		[settings setStatusBarHidden:YES];
 		callCount++;
 	}
 
@@ -37,7 +37,7 @@ NSArray* getAppPreferences(){
 
 
 // PREFERENCES 
-// Note: doing if(pref){} doesn't work sometimes (returns NO in certain processes), but checking (prefs &&...) works, so I'm just rollin w it . . .
+// Note: doing if(pref){} doesn't work sometimes (returns NO in certain processes), but checking (prefs &&...) works, so I'm just rolling w it . . .
 void preferencesChanged(){
 	NSDictionary *prefs = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"me.lightmann.hijackprefs"];
 	isEnabled = (prefs && [prefs objectForKey:@"isEnabled"] ? [[prefs objectForKey:@"isEnabled"] boolValue] : YES );
@@ -49,6 +49,12 @@ void preferencesChanged(){
 
 		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.hijackprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);	
 
-		if(isEnabled) %init();
+		NSString *sceneClass = @"FBSSceneImpl";
+
+		if(SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"14")) {
+			sceneClass = @"FBSScene";
+		}
+
+		if(isEnabled) %init(SceneClass = NSClassFromString(sceneClass));
 	}
 }
