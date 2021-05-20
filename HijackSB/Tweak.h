@@ -6,6 +6,13 @@
 -(void)doTheOtherThing;  
 @end
 
+@interface SBFolderController : UIViewController
+@property (nonatomic,retain) UIStatusBar_Modern * fakeStatusBar;                                                      
+@end
+
+@interface SBRootFolderController : SBFolderController
+@end
+
 // prefs
 static BOOL isEnabled;
 static BOOL lsStatus;

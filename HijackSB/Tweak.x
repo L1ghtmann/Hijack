@@ -52,6 +52,15 @@
 }
 %end
 
+// when a folder is opened, a fake statusbar (i.e., not the system one) is made, so we have to hide it separately 
+%hook SBRootFolderController
+-(void)folderControllerWillOpen:(id)arg1 {
+	%orig;
+
+	if(hsStatus) [self.fakeStatusBar setHidden:YES];	
+}
+%end
+
 // cc statusbar
 %hook CCUIStatusBar
 -(instancetype)initWithFrame:(CGRect)arg1{

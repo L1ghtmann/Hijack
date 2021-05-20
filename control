@@ -1,6 +1,6 @@
 Package: me.lightmann.hijack
 Name: Hijack
-Version: 1.0.1
+Version: 1.0.1.1
 Depends: mobilesubstrate, preferenceloader, applist, firmware (>= 13.0)
 Architecture: iphoneos-arm
 Description: Selectively hide the statusbar on the LS, HS, CC, and/or within chosen apps.
