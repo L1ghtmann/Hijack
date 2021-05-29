@@ -9,11 +9,11 @@
 @end
 
 @interface FBSScene : NSObject // iOS 14
-@property (nonatomic,readonly) UIMutableApplicationSceneClientSettings *clientSettings; 
+@property (nonatomic,readonly) UIMutableApplicationSceneClientSettings *clientSettings;
 -(void)updateClientSettings:(UIMutableApplicationSceneClientSettings *)settings withTransitionContext:(id)arg2;
 @end
 
-@interface FBSSceneImpl : FBSScene // iOS 13 
+@interface FBSSceneImpl : FBSScene // iOS 13
 @end
 
 // prefs

@@ -4,24 +4,24 @@
 // Made during covid
 // Hijack(SB)
 
-// post notifications when CoverSheet is about to be presented or dismissed 
+// post notifications when CoverSheet is about to be presented or dismissed
 %hook CSCoverSheetViewController
 -(void)viewWillAppear:(BOOL)animated{
 	if(lsStatus){
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"onLS_Hijack" object:nil];	 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"onLS_Hijack" object:nil];
 	}
 	else{
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"onLS_Norm" object:nil];	 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"onLS_Norm" object:nil];
 	}
 
 	%orig;
 }
 -(void)viewWillDisappear:(BOOL)animated{
 	if(hsStatus){
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"onHS_Hijack" object:nil];	 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"onHS_Hijack" object:nil];
 	}
 	else{
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"onHS_Norm" object:nil];	 
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"onHS_Norm" object:nil];
 	}
 
 	%orig;
@@ -29,10 +29,10 @@
 %end
 
 %hook UIStatusBar_Modern
-// add observers for notifications 
+// add observers for notifications
 -(void)setStatusBar:(id)bar{
 	%orig;
-	
+
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doTheThing) name:@"onLS_Hijack" object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doTheOtherThing) name:@"onLS_Norm" object:nil];
 
@@ -40,7 +40,7 @@
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doTheOtherThing) name:@"onHS_Norm" object:nil];
 }
 
-// respond to notifications 
+// respond to notifications
 %new
 -(void)doTheThing{
 	[self.statusBar setAlpha:0];
@@ -52,12 +52,12 @@
 }
 %end
 
-// when a folder is opened, a fake statusbar (i.e., not the system one) is made, so we have to hide it separately 
+// when a folder is opened, a fake statusbar (i.e., not the system one) is made, so we have to hide it separately
 %hook SBRootFolderController
 -(void)folderControllerWillOpen:(id)arg1 {
 	%orig;
 
-	if(hsStatus) [self.fakeStatusBar setHidden:YES];	
+	if(hsStatus) [self.fakeStatusBar setHidden:YES];
 }
 %end
 
@@ -70,7 +70,7 @@
 %end
 
 
-// PREFERENCES 
+// PREFERENCES
 void preferencesChanged(){
 	NSDictionary *prefs = [[NSUserDefaults standardUserDefaults] persistentDomainForName:@"me.lightmann.hijackprefs"];
 	isEnabled = (prefs && [prefs objectForKey:@"isEnabled"] ? [[prefs objectForKey:@"isEnabled"] boolValue] : YES );
@@ -82,7 +82,9 @@ void preferencesChanged(){
 %ctor {
 	preferencesChanged();
 
-	CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.hijackprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);	
+    if(isEnabled){
+		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.hijackprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
-    if(isEnabled) %init();
+		%init();
+	}
 }
