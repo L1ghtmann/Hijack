@@ -1,8 +1,11 @@
-#import "Tweak.h"
+//
+//	Tweak.x
+//	Hijack(SB)
+//
+//	Created by Lightmann during COVID-19
+//
 
-// Lightmann
-// Made during covid
-// Hijack(SB)
+#import "Tweak.h"
 
 // post notifications when CoverSheet is about to be presented or dismissed
 %hook CSCoverSheetViewController
@@ -82,7 +85,7 @@ void preferencesChanged(){
 %ctor {
 	preferencesChanged();
 
-    if(isEnabled){
+	if(isEnabled){
 		CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)preferencesChanged, CFSTR("me.lightmann.hijackprefs-updated"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
 		%init();

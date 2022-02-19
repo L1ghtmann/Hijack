@@ -1,21 +1,24 @@
-#import "Tweak.h"
+//
+//	Tweak.x
+//	Hijack(Apps)
+//
+//	Created by Lightmann during COVID-19
+//
 
-// Lightmann
-// Made during covid
-// Hijack(Apps)
+#import "Tweak.h"
 
 int callCount;
 
 // get bundleIDs for apps toggled in prefs (applist)
 NSArray* getAppPreferences(){
-    NSMutableDictionary *appList = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.lightmann.hijackprefs.applist.plist"];
-    NSMutableArray *appsToHideStatusbar = [NSMutableArray new];
-    for(NSString *bundleID in appList) {
-        if([[appList objectForKey:bundleID] boolValue]) {
-            [appsToHideStatusbar addObject:bundleID];
-        }
-    }
-    return appsToHideStatusbar;
+	NSMutableDictionary *appList = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/me.lightmann.hijackprefs.applist.plist"];
+	NSMutableArray *appsToHideStatusbar = [NSMutableArray new];
+	for(NSString *bundleID in appList) {
+		if([[appList objectForKey:bundleID] boolValue]) {
+			[appsToHideStatusbar addObject:bundleID];
+		}
+	}
+	return appsToHideStatusbar;
 }
 
 %hook SceneClass
